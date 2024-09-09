@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "title": "Producto 1 Actualizado",
+    "description": "Nueva descripción del producto 1",
+    "code": "CMB001",
+    "price": 120,
+    "status": true,
+    "stock": 8,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/camiseta1.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Gorra Trucker",
+    "description": "Gorra con malla transpirable y visera curva.",
+    "code": "GTR001",
+    "price": 800,
+    "status": true,
+    "stock": 30,
+    "category": "Accesorios",
+    "thumbnails": [
+      "img/gorra1.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Pantalón Deportivo",
+    "description": "Pantalón cómodo y ajustado, ideal para deportes.",
+    "code": "PDT001",
+    "price": 2500,
+    "status": true,
+    "stock": 20,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/pantalon1.jpg"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Zapatillas Running",
+    "description": "Zapatillas ligeras con soporte extra para correr.",
+    "code": "ZRN001",
+    "price": 4200,
+    "status": true,
+    "stock": 15,
+    "category": "Calzado",
+    "thumbnails": [
+      "img/zapatillas1.jpg"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Buzo Hoodie",
+    "description": "Buzo de algodón con capucha y bolsillo frontal.",
+    "code": "BHD001",
+    "price": 3200,
+    "status": true,
+    "stock": 25,
+    "category": "Ropa",
+    "thumbnails": [
+      "img/buzo1.jpg"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "Nuevo Producto",
+    "description": "Descripción del nuevo producto",
+    "code": "P003",
+    "price": 200,
+    "status": true,
+    "stock": 20,
+    "category": "Categoria 3",
+    "thumbnails": [
+      "imagen3.jpg"
+    ]
+  }
+]
