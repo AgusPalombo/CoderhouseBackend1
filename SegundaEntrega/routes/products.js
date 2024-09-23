@@ -55,7 +55,7 @@ router.post('/', (req, res) => {
     }
 
     const newProduct = {
-        id: products.length ? products[products.length - 1].id + 1 : 1,
+        id: products.length ? products[products.length - 1].id + 1 : 1, //Calculo que asigna el ID automaticamente, no actualiza en caso de restar un prodducto
         title,
         description,
         price,
