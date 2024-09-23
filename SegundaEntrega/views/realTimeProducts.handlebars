@@ -1,0 +1,53 @@
+{{!-- realTimeProducts.handlebars --}}
+<h1>Productos en Tiempo Real</h1>
+<ul id="productList">
+    {{#each productos}}
+        <li>
+            {{this.title}} - ${{this.price}} 
+            <button onclick="eliminarProducto({{this.id}})">Eliminar</button>
+        </li>
+    {{/each}}
+</ul>
+
+<h2>Agregar Nuevo Producto</h2>
+<form id="productForm">
+    <input type="text" id="title" placeholder="Título" required>
+    <input type="text" id="description" placeholder="Descripción" required>
+    <input type="number" id="price" placeholder="Precio" required>
+    <input type="number" id="stock" placeholder="Stock" required>
+    <input type="text" id="category" placeholder="Categoría" required>
+    <input type="text" id="thumbnails" placeholder="Thumbnails (separados por comas)" required>
+    <button type="submit">Agregar Producto</button>
+</form>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('productos', (productos) => {
+        const productList = document.getElementById('productList');
+        productList.innerHTML = ''; // Limpiar lista
+        productos.forEach(product => {
+            const li = document.createElement('li');
+            li.innerHTML = `${product.title} - $${product.price} <button onclick="eliminarProducto(${product.id})">Eliminar</button>`;
+            productList.appendChild(li);
+        });
+    });
+
+    document.getElementById('productForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('title').value;
+        const description = document.getElementById('description').value;
+        const price = document.getElementById('price').value;
+        const stock = document.getElementById('stock').value;
+        const category = document.getElementById('category').value;
+        const thumbnails = document.getElementById('thumbnails').value.split(',');
+
+        socket.emit('nuevoProducto', { title, description, price, stock, category, thumbnails });
+        document.getElementById('productForm').reset(); // Reiniciar el formulario
+    });
+
+    function eliminarProducto(productId) {
+        socket.emit('eliminarProducto', productId);
+    }
+</script>

@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "title": "Hoodie",
+    "description": "Basico",
+    "price": "30000",
+    "stock": "32",
+    "category": "Abrigos",
+    "thumbnails": [
+      "https://bostonhype.com.ar/wp-content/uploads/2024/02/HOODIE-BOXY-FIT-GRIS-OSCURO-1.jpg"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Remera",
+    "description": "Basica",
+    "price": "10000",
+    "stock": "34",
+    "category": "Casual",
+    "thumbnails": [
+      "https://sublitextil.com.ar/wp-content/uploads/2019/01/Remera-sublimar-hombre-.jpg"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Trucker Hat",
+    "description": "Basci Trucker Hat",
+    "price": "4000",
+    "stock": "21",
+    "category": "Urbano",
+    "thumbnails": [
+      "https://sublitextil.com.ar/wp-content/uploads/2019/01/Remera-sublimar-hombre-.jpg"
+    ]
+  }
+]
