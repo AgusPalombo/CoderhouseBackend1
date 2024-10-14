@@ -1,0 +1,72 @@
+1. Obtener todos los productos
+Método: GET
+URL: http://localhost:8080/api/products
+Descripción: Obtiene la lista de todos los productos.
+
+
+2. Obtener un producto por ID
+Método: GET
+URL: http://localhost:8080/api/products/{id}
+Descripción: Reemplaza {id} con el ID del producto que deseas obtener. Por ejemplo: http://localhost:8080/api/products/1
+
+
+3. Crear un nuevo producto
+Método: POST
+URL: http://localhost:8080/api/products
+Cuerpo (Body):
+
+{
+    "title": "Nuevo Producto",
+    "description": "Descripción del nuevo producto",
+    "code": "P003",
+    "price": 200,
+    "status": true,
+    "stock": 20,
+    "category": "Categoria 3",
+    "thumbnails": ["imagen3.jpg"]
+}
+
+
+
+4. Actualizar un producto
+Método: PUT
+URL: http://localhost:8080/api/products/{id}
+
+Cuerpo (Body):
+{
+    "title": "Producto Actualizado",
+    "description": "Descripción actualizada",
+    "code": "P001", // ID del producto no debe cambiar
+    "price": 250,
+    "status": true,
+    "stock": 15,
+    "category": "Categoria Actualizada",
+    "thumbnails": ["imagen_actualizada.jpg"]
+}
+
+
+
+5. Eliminar un producto
+Método: DELETE
+URL: http://localhost:8080/api/products/{id}
+Reemplaza {id} con el ID del producto a eliminar.
+
+
+6. Producto duplicado
+LOS PRODUCTOS DUPLICADOS DEBERIAN AUMENTAR EN 1 EL STOCK DEL PRODUCTO EXISTENTE
+
+Agregar producto existente
+
+Método: POST
+URL: http://localhost:8080/api/products
+
+Body:
+{
+  "id": 1,
+  "title": "Producto Existente",
+  "description": "Descripción del producto existente",
+  "price": 150,
+  "stock": 10,
+  "category": "Categoria 1",
+  "thumbnails": ["imagen1.jpg"]
+}
