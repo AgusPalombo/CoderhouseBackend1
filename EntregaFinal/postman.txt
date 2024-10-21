@@ -89,7 +89,7 @@ URL: /api/carts/:cid/products
 Body (JSON):
 
 {
-    "productId": "67169b048f5279172c1897f8",
+    "productId": "6716a1f8d5dea42e93e62a9d",
     "quantity": 2
 }
 
