@@ -5,6 +5,11 @@ use tienda
 CHEQUEAR QUE LA PRECARGA HAYA SIDO EXISTOSA:
 db.products.find()
 
+
+Mongo Atlas:
+
+Agregar un .env con el siguiente texto: MONGODB_URI=mongodb+srv://agpalombo99:CoderHouse@tienda.cms66.mongodb.net/?retryWrites=true&w=majority&appName=Tienda
+
 Endpoints para Carritos
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 1. GET General
@@ -95,7 +100,7 @@ URL: /api/carts/:cid
 Body (JSON):
 
 {
-    "productId": "6716a1f8d5dea42e93e62a9e",
+    "productId": "id-producto",
     "quantity": 2
 }
 
