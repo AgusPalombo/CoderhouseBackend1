@@ -1,3 +1,9 @@
+Base de datos: mongodb://localhost:27017/tienda
+
+use tienda
+
+CHEQUEAR QUE LA PRECARGA HAYA SIDO EXISTOSA:
+db.products.find()
 
 Endpoints para Carritos
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -89,7 +95,7 @@ URL: /api/carts/:cid/products
 Body (JSON):
 
 {
-    "productId": "6716a1f8d5dea42e93e62a9d",
+    "productId": "6716a1f8d5dea42e93e62a9e",
     "quantity": 2
 }
 
@@ -112,12 +118,16 @@ Body (JSON):
 Método: DELETE
 URL: /api/carts/:cid/products/:pid
 Descripción: Elimina un producto específico del carrito por su ID.
-Limpiar el carrito
+
+
+7.Limpiar el carrito
+Método: DELETE
+URL:/api/carts/:cid/clean
+Descripción: Elimina todos los productos del carrito
 
 
 
-
-7.Eliminar un carrito
+8.Eliminar un carrito
 Método: DELETE
 URL: /api/carts/:cid
 Descripción: Elimina el carrito con dicho ID.
@@ -125,7 +135,7 @@ Descripción: Elimina el carrito con dicho ID.
 
 
 
-8.Eliminar todos los productos del carrito
+9.Eliminar todos los productos del carrito
 Método: DELETE
 URL: /api/carts/:cid/clean
 Descripción: Elimina todos los productos del carrito específico.
