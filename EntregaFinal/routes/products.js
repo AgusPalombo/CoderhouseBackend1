@@ -1,76 +1,47 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const router = express.Router();
+const Product = require('../models/products'); 
 
-// Conexión a la base de datos MongoDB
-mongoose.connect('mongodb://localhost:27017/tienda', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-});
-
-// Definir el esquema de producto
-const productSchema = new mongoose.Schema({
-    title: String,
-    description: String,
-    price: Number,
-    stock: Number,
-    category: String,
-    thumbnails: [String]
-});
-
-// Crear el modelo de productos
-const Product = mongoose.model('Product', productSchema);
-
-// Obtener todos los productos con paginación, orden y filtros
+// Obtener todos los productos con paginación y filtrado
 router.get('/', async (req, res) => {
-    const { limit = 10, page = 1, sort, query } = req.query;
-
     try {
-        // Filtros: Buscar por categoría o stock
-        let filter = {};
-        if (query) {
-            filter = {
-                $or: [
-                    { category: query },  // Filtro por categoría
-                    { stock: query }      // Filtro por disponibilidad (stock)
-                ]
-            };
+        // Obtención de parámetros de consulta
+        const { limit = 10, page = 1, sort, query } = req.query;
+
+        // Convertir limit y page a números
+        const limitNumber = parseInt(limit);
+        const pageNumber = parseInt(page);
+
+        // Inicializar condiciones de búsqueda
+        const filter = query ? { title: new RegExp(query, 'i') } : {}; // Búsqueda por título (case insensitive)
+
+        // Inicializar opciones de ordenamiento
+        let sortOptions = {};
+        if (sort) {
+            sortOptions.price = sort === 'asc' ? 1 : -1; // Ascendente o descendente
         }
 
-        // Ordenamiento por precio (ascendente o descendente)
-        let sortOption = {};
-        if (sort === 'asc') {
-            sortOption = { price: 1 };
-        } else if (sort === 'desc') {
-            sortOption = { price: -1 };
-        }
-
-        // Obtener productos con paginación
+        // Consulta a la base de datos con paginación, filtrado y ordenamiento
         const products = await Product.find(filter)
-            .sort(sortOption)
-            .skip((page - 1) * limit)
-            .limit(parseInt(limit));
+            .sort(sortOptions)
+            .limit(limitNumber)
+            .skip((pageNumber - 1) * limitNumber)
+            .exec();
 
-        // Contar el total de productos para calcular el total de páginas
+        // Obtener el total de productos para calcular la cantidad de páginas
         const totalProducts = await Product.countDocuments(filter);
-        const totalPages = Math.ceil(totalProducts / limit);
+        const totalPages = Math.ceil(totalProducts / limitNumber);
 
-        const result = {
+        // Respuesta con productos y datos de paginación
+        res.json({
             status: 'success',
-            payload: products,
+            totalProducts,
             totalPages,
-            prevPage: page > 1 ? page - 1 : null,
-            nextPage: page < totalPages ? parseInt(page) + 1 : null,
-            page: parseInt(page),
-            hasPrevPage: page > 1,
-            hasNextPage: page < totalPages,
-            prevLink: page > 1 ? `/products?page=${page - 1}&limit=${limit}&sort=${sort}&query=${query}` : null,
-            nextLink: page < totalPages ? `/products?page=${parseInt(page) + 1}&limit=${limit}&sort=${sort}&query=${query}` : null,
-        };
-
-        res.json(result);
+            currentPage: pageNumber,
+            products
+        });
     } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
+        res.status(500).json({ error: 'Error al obtener productos' });
     }
 });
 
@@ -120,7 +91,7 @@ router.post('/', async (req, res) => {
 
 // Actualizar un producto por ID
 router.put('/:pid', async (req, res) => {
-    const { id, ...rest } = req.body; // No permitir cambiar el ID
+    const { id, ...rest } = req.body;
 
     try {
         const product = await Product.findByIdAndUpdate(req.params.pid, rest, { new: true });

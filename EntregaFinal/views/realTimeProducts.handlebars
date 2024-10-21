@@ -1,31 +1,121 @@
-<h1>Productos en Tiempo Real</h1>
-<div id="products-list"></div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Productos en Tiempo Real</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Productos en Tiempo Real</h1>
+    <div id="productos">
+        {{#if productos.length}}
+            <ul>
+                {{#each productos}}
+                    <li>{{this.title}} - ${{this.price}} 
+                        <form id="formAgregarProducto-{{this._id}}" action="#" method="POST" style="display:inline;">
+                            <input type="hidden" name="productId" value="{{this._id}}">
+                            <input type="number" name="quantity" min="1" value="1" style="width: 50px;">
+                            <button type="submit">Agregar al Carrito</button>
+                        </form>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>No hay productos disponibles. Puedes agregar uno nuevo.</p>
+            <form id="formNuevoProducto">
+                <input type="text" name="title" placeholder="Nombre del producto" required>
+                <input type="text" name="description" placeholder="Descripción" required>
+                <input type="number" name="price" placeholder="Precio" required>
+                <input type="text" name="category" placeholder="Categoría" required> <!-- Campo de categoría -->
+                <input type="number" name="stock" placeholder="Stock" required min="0"> <!-- Campo de stock -->
+                <button type="submit">Agregar Producto</button>
+            </form>
+        {{/if}}
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-    const socket = io();
-
-    socket.on('updateProducts', (products) => {
-        const productList = document.getElementById('products-list');
-        productList.innerHTML = ''; // Limpiar lista actual
-
-        products.forEach(product => {
-            const productElement = document.createElement('div');
-            productElement.innerHTML = `
-                <h2>${product.title}</h2>
-                <p>Precio: $${product.price}</p>
-                <p>Categoría: ${product.category}</p>
-                <p>Stock: ${product.stock}</p>
-                <button onclick="addToCart('${product.id}')">Agregar al carrito</button>
-            `;
-            productList.appendChild(productElement);
+        // Manejar el formulario para agregar un nuevo producto
+        const formNuevoProducto = document.getElementById('formNuevoProducto');
+        formNuevoProducto.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(formNuevoProducto);
+            const nuevoProducto = {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                price: formData.get('price'),
+                category: formData.get('category'), // Añadir categoría
+                stock: formData.get('stock') // Añadir stock
+            };
+            socket.emit('nuevoProducto', nuevoProducto);
+            formNuevoProducto.reset();
         });
-    });
 
-    function addToCart(productId) {
-        fetch(`/api/carts/:cid/products/${productId}`, { method: 'POST' })
-            .then(response => response.json())
-            .then(data => console.log('Producto añadido:', data))
-            .catch(error => console.error('Error al añadir el producto:', error));
-    }
-</script>
+        // Agregar evento a cada formulario de agregar producto
+        document.querySelectorAll('[id^="formAgregarProducto-"]').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const productId = form.querySelector('input[name="productId"]').value;
+                const quantity = parseInt(form.querySelector('input[name="quantity"]').value);
+
+                // Obtener el cartId de alguna fuente, como un servicio o un valor almacenado
+                let cartId = sessionStorage.getItem('cartId');
+
+                if (!cartId) {
+                    // Crear un nuevo carrito
+                    const response = await fetch('/api/carts', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({})
+                    });
+
+                    if (response.ok) {
+                        const cart = await response.json();
+                        cartId = cart._id; 
+                        sessionStorage.setItem('cartId', cartId);
+                    } else {
+                        alert('Error al crear el carrito.');
+                        return;
+                    }
+                }
+
+                // Agregar el producto al carrito
+                const addResponse = await fetch(`/api/carts/${cartId}/products`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ productId, quantity })
+                });
+
+                if (addResponse.ok) {
+                    alert('Producto agregado al carrito.');
+                } else {
+                    const error = await addResponse.json();
+                    alert(`Error: ${error.error}`);
+                }
+            });
+        });
+
+        // Escuchar los eventos de productos
+        socket.on('productos', (productos) => {
+            const listaProductos = document.getElementById('productos');
+            listaProductos.innerHTML = ''; // Limpia la lista
+            productos.forEach(producto => {
+                const li = document.createElement('li');
+                li.innerHTML = `${producto.title} - $${producto.price} 
+                <form action="/api/carts/{{cartId}}/products/${producto._id}" method="POST" style="display:inline;">
+                    <input type="number" name="quantity" min="1" value="1" style="width: 50px;">
+                    <button type="submit">Agregar al Carrito</button>
+                </form>`;
+                listaProductos.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>

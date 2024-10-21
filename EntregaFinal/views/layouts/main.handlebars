@@ -1,52 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>Productos en Tiempo Real</title>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
     <header>
         <nav>
             <ul>
-                <li><a href="/products">Ver Productos</a></li>
-                <li><a href="/carts">Ver Carritos</a></li>
+                <li><a href="../products.handlebars">Ver Productos</a></li>
+                <li><a href="../carts.handlebars">Ver Carritos</a></li>
+                <li><a href="../realTimeProducts.handlebars">Productos en Tiempo Real</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <h1>Lista de Productos</h1>
-        {{#if products.length}}
-        <table>
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                {{#each products}}
-                <tr>
-                    <td>{{this.title}}</td>
-                    <td>{{this.description}}</td>
-                    <td>${{this.price}}</td>
-                    <td>
-                        <form action="/api/carts/{{cartId}}/products/{{this._id}}" method="POST">
-                            <input type="number" name="quantity" min="1" value="1" style="width: 50px;">
-                            <button type="submit">Agregar al Carrito</button>
-                        </form>
-                    </td>
-                </tr>
-                {{/each}}
-            </tbody>
-        </table>
-        {{else}}
-        <p>No hay productos disponibles en este momento.</p>
-        {{/if}}
+        <h1>Productos en Tiempo Real</h1>
+        <div id="productos">
+            {{#if productos.length}}
+                <ul>
+                    {{#each productos}}
+                        <li>{{this.title}} - ${{this.price}} 
+                            <form action="/api/carts/{{cartId}}/products/{{this._id}}" method="POST" style="display:inline;">
+                                <input type="number" name="quantity" min="1" value="1" style="width: 50px;">
+                                <button type="submit">Agregar al Carrito</button>
+                            </form>
+                        </li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p>No hay productos disponibles.</p>
+            {{/if}}
+        </div>
     </main>
 
     <footer>

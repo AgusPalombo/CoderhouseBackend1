@@ -1,72 +1,129 @@
-1. Obtener todos los productos
+
+Endpoints para Carritos
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+1. GET General
 Método: GET
-URL: http://localhost:8080/api/products
-Descripción: Obtiene la lista de todos los productos.
+URL: /api/products
+Descripción: Este endpoint devuelve una lista de todos los productos en la base de datos. Si no hay productos, devolverá una lista vacía.
 
 
-2. Obtener un producto por ID
+2. GET con Query Params
 Método: GET
-URL: http://localhost:8080/api/products/{id}
-Descripción: Reemplaza {id} con el ID del producto que deseas obtener. Por ejemplo: http://localhost:8080/api/products/1
+URL: /api/products?limit=1&page=1&sort=asc&query=Producto (este es un ejemplo, aquí se pueden modificar los parámetros, Ej: poner en query=Computadora)
+Descripción: Este endpoint devuelve una lista de productos filtrados y paginados. En este caso, devolverá hasta 5 productos que contengan "Producto" en el título, en la primera página, ordenados de manera ascendente por precio.
 
 
-3. Crear un nuevo producto
+3. Ejemplo Crear un nuevo producto
 Método: POST
-URL: http://localhost:8080/api/products
-Cuerpo (Body):
-
+URL: /api/products
+Body (JSON):
 {
-    "title": "Nuevo Producto",
-    "description": "Descripción del nuevo producto",
-    "code": "P003",
-    "price": 200,
-    "status": true,
-    "stock": 20,
-    "category": "Categoria 3",
-    "thumbnails": ["imagen3.jpg"]
+  "title": "Nombre del Producto",
+  "description": "Descripción del Producto",
+  "price": 100,
+  "stock": 50,
+  "category": "Categoría del Producto",
+  "thumbnails": ["url1", "url2"]
 }
 
 
+4.Actualizar un producto existente
 
-4. Actualizar un producto
 Método: PUT
-URL: http://localhost:8080/api/products/{id}
-
-Cuerpo (Body):
+URL: /api/products/:pid
+Body (JSON):
 {
-    "title": "Producto Actualizado",
-    "description": "Descripción actualizada",
-    "code": "P001", // ID del producto no debe cambiar
-    "price": 250,
-    "status": true,
-    "stock": 15,
-    "category": "Categoria Actualizada",
-    "thumbnails": ["imagen_actualizada.jpg"]
+  "title": "Nuevo Nombre del Producto",
+  "description": "Nueva Descripción",
+  "price": 120,
+  "stock": 30,
+  "category": "Nueva Categoría",
+  "thumbnails": ["url1", "url2"]
 }
 
 
 
-5. Eliminar un producto
+5. Eliminar un producto por ID
 Método: DELETE
-URL: http://localhost:8080/api/products/{id}
-Reemplaza {id} con el ID del producto a eliminar.
+URL: /api/products/:pid
+Descripción: Elimina un producto específico por su ID.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-6. Producto duplicado
-LOS PRODUCTOS DUPLICADOS DEBERIAN AUMENTAR EN 1 EL STOCK DEL PRODUCTO EXISTENTE
 
-Agregar producto existente
+Endpoints para Carritos
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1.Crear un nuevo carrito
 
 Método: POST
-URL: http://localhost:8080/api/products
+URL: /api/carts
+Body (JSON):{}
 
-Body:
+
+
+2.Obtener todos los carritos
+Método: GET
+URL: /api/carts
+Descripción: Obtiene todos los carritos existentes.
+Obtener un carrito por ID
+
+
+
+3. Obtener un carrito según ID
+Método: GET
+URL: /api/carts/:cid
+Descripción: Obtiene un carrito específico por su ID.
+Agregar un producto al carrito
+
+
+
+4. Agregar un producto al carrito
+Método: POST
+URL: /api/carts/:cid/products
+Body (JSON):
+
 {
-  "id": 1,
-  "title": "Producto Existente",
-  "description": "Descripción del producto existente",
-  "price": 150,
-  "stock": 10,
-  "category": "Categoria 1",
-  "thumbnails": ["imagen1.jpg"]
+    "productId": "67169b048f5279172c1897f8",
+    "quantity": 2
 }
+
+
+
+5.Actualizar la cantidad de un producto en el carrito
+
+Método: PUT
+URL: /api/carts/:cid/products/:pid
+Body (JSON):
+
+{
+  "quantity": 5 
+}
+
+
+
+6.Eliminar un producto del carrito
+
+Método: DELETE
+URL: /api/carts/:cid/products/:pid
+Descripción: Elimina un producto específico del carrito por su ID.
+Limpiar el carrito
+
+
+
+
+7.Eliminar un carrito
+Método: DELETE
+URL: /api/carts/:cid
+Descripción: Elimina el carrito con dicho ID.
+
+
+
+
+8.Eliminar todos los productos del carrito
+Método: DELETE
+URL: /api/carts/:cid/clean
+Descripción: Elimina todos los productos del carrito específico.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
