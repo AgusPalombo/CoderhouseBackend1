@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const { createServer } = require('http');
@@ -12,16 +13,29 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-// Conexión a MongoDB
-mongoose.connect('mongodb://localhost:27017/tienda', {
+// // Conexión a MongoDB
+// mongoose.connect('mongodb://localhost:27017/tienda', {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+// })
+// .then(() => {
+//     console.log('Conectado a MongoDB');
+//     precargarProductos(); // Llama a la función de precarga
+// })
+// .catch(err => console.error('Error de conexión a MongoDB:', err));
+
+
+
+mongoose.connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
 .then(() => {
-    console.log('Conectado a MongoDB');
+    console.log('Conectado a MongoDB Atlas');
     precargarProductos(); // Llama a la función de precarga
 })
 .catch(err => console.error('Error de conexión a MongoDB:', err));
+
 
 // Función para precargar productos
 async function precargarProductos() {

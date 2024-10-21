@@ -91,7 +91,7 @@ Agregar un producto al carrito
 
 4. Agregar un producto al carrito
 Método: POST
-URL: /api/carts/:cid/products
+URL: /api/carts/:cid
 Body (JSON):
 
 {

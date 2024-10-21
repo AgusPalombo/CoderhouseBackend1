@@ -57,7 +57,7 @@ router.get('/:cid', async (req, res) => {
 });
 
 // Agregar un producto al carrito
-router.post('/:cid/products', async (req, res) => {
+router.post('/:cid', async (req, res) => {
     try {
         // Verificar que el carrito exista
         const cart = await Cart.findById(req.params.cid);
