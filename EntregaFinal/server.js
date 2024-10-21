@@ -12,39 +12,73 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-// Conexión a MongoDB usando Mongoose
+// Conexión a MongoDB
 mongoose.connect('mongodb://localhost:27017/tienda', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 })
-    .then(async () => {
-        console.log('Conectado a MongoDB');
+.then(() => {
+    console.log('Conectado a MongoDB');
+    precargarProductos(); // Llama a la función de precarga
+})
+.catch(err => console.error('Error de conexión a MongoDB:', err));
 
-        // Agregar productos de prueba si la colección está vacía
-        const count = await Product.countDocuments();
-        if (count === 0) {
-            const productosPrueba = [
-                {
-                    title: 'Producto 1',
-                    price: 100,
-                    description: 'Descripción del Producto 1',
-                    category: 'Categoría 1', 
-                    stock: 10, 
-                },
-                {
-                    title: 'Producto 2',
-                    price: 200,
-                    description: 'Descripción del Producto 2',
-                    category: 'Categoría 2', 
-                    stock: 5, 
-                }
-            ];
-
-            await Product.insertMany(productosPrueba);
-            console.log('Productos de prueba agregados a la base de datos');
+// Función para precargar productos
+async function precargarProductos() {
+    const productos = [
+        {
+            title: "Camiseta Deportiva",
+            description: "Camiseta ligera para entrenamiento.",
+            price: 19.99,
+            stock: 100,
+            category: "Ropa",
+            thumbnails: ["url1.jpg", "url2.jpg"]
+        },
+        {
+            title: "Zapatillas de Correr",
+            description: "Zapatillas cómodas para correr.",
+            price: 59.99,
+            stock: 50,
+            category: "Calzado",
+            thumbnails: ["url3.jpg", "url4.jpg"]
+        },
+        {
+            title: "Mochila de Aventura",
+            description: "Mochila resistente para excursiones.",
+            price: 39.99,
+            stock: 30,
+            category: "Accesorios",
+            thumbnails: ["url5.jpg", "url6.jpg"]
+        },
+        {
+            title: "Gafas de Sol",
+            description: "Gafas de sol con protección UV.",
+            price: 29.99,
+            stock: 70,
+            category: "Accesorios",
+            thumbnails: ["url7.jpg", "url8.jpg"]
+        },
+        {
+            title: "Reloj Deportivo",
+            description: "Reloj con cronómetro y resistencia al agua.",
+            price: 79.99,
+            stock: 20,
+            category: "Relojes",
+            thumbnails: ["url9.jpg", "url10.jpg"]
         }
-    })
-    .catch(err => console.error('Error al conectar a MongoDB', err));
+    ];
+
+    try {
+        // Elimina todos los productos existentes para evitar duplicados
+        await Product.deleteMany({});
+
+        // Inserta los nuevos productos
+        await Product.insertMany(productos);
+        console.log('Productos precargados en la base de datos');
+    } catch (error) {
+        console.error('Error al precargar productos:', error);
+    }
+}
 
 // Configurar Handlebars como motor de plantillas
 app.engine('handlebars', engine({

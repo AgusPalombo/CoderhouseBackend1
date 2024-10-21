@@ -9,8 +9,12 @@ Descripción: Este endpoint devuelve una lista de todos los productos en la base
 
 2. GET con Query Params
 Método: GET
-URL: /api/products?limit=1&page=1&sort=asc&query=Producto (este es un ejemplo, aquí se pueden modificar los parámetros, Ej: poner en query=Computadora)
-Descripción: Este endpoint devuelve una lista de productos filtrados y paginados. En este caso, devolverá hasta 5 productos que contengan "Producto" en el título, en la primera página, ordenados de manera ascendente por precio.
+http://localhost:3000
+/api/products?limit=2&page=1&sort=asc&query=Camiseta
+/api/products?limit=3&page=1&sort=desc&query=Gafas
+/api/products?limit=5&page=1
+/api/products?limit=1&page=1&sort=asc&category=Calzado
+/api/products?limit=2&page=1&price=30
 
 
 3. Ejemplo Crear un nuevo producto

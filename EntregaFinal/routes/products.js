@@ -2,48 +2,71 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/products'); 
 
-// Obtener todos los productos con paginación y filtrado
+// Obtener productos con filtros, paginación y ordenamiento
 router.get('/', async (req, res) => {
     try {
-        // Obtención de parámetros de consulta
-        const { limit = 10, page = 1, sort, query } = req.query;
+        const { category, available, sort, limit = 10, page = 1, query, minPrice, maxPrice } = req.query;
 
-        // Convertir limit y page a números
-        const limitNumber = parseInt(limit);
-        const pageNumber = parseInt(page);
+        // Construir el filtro
+        const filter = {};
 
-        // Inicializar condiciones de búsqueda
-        const filter = query ? { title: new RegExp(query, 'i') } : {}; // Búsqueda por título (case insensitive)
-
-        // Inicializar opciones de ordenamiento
-        let sortOptions = {};
-        if (sort) {
-            sortOptions.price = sort === 'asc' ? 1 : -1; // Ascendente o descendente
+        // Filtrar por categoría si se proporciona
+        if (category) {
+            filter.category = category;
         }
 
-        // Consulta a la base de datos con paginación, filtrado y ordenamiento
-        const products = await Product.find(filter)
+        // Filtrar por disponibilidad si se proporciona
+        if (available) {
+            filter.stock = { $gt: 0 }; // Solo productos disponibles
+        }
+
+        // Filtrar por título si se proporciona
+        if (query) {
+            filter.title = { $regex: query, $options: 'i' };
+        }
+
+        // Filtrar por precio mínimo si se proporciona
+        if (minPrice) {
+            filter.price = { $gte: parseFloat(minPrice) };
+        }
+
+        // Filtrar por precio máximo si se proporciona
+        if (maxPrice) {
+            filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
+        }
+
+        // Configuración del ordenamiento
+        const sortOptions = {};
+        if (sort === 'asc') {
+            sortOptions.price = 1; // Orden ascendente
+        } else if (sort === 'desc') {
+            sortOptions.price = -1; // Orden descendente
+        }
+
+        // Calcular el número de productos a omitir
+        const skip = (page - 1) * limit;
+
+        // Obtener los productos con filtros, ordenamiento y paginación
+        const productos = await Product.find(filter)
             .sort(sortOptions)
-            .limit(limitNumber)
-            .skip((pageNumber - 1) * limitNumber)
-            .exec();
+            .skip(skip)
+            .limit(parseInt(limit)); // Limitar la cantidad de resultados
 
-        // Obtener el total de productos para calcular la cantidad de páginas
-        const totalProducts = await Product.countDocuments(filter);
-        const totalPages = Math.ceil(totalProducts / limitNumber);
+        // Contar el total de productos para la paginación
+        const total = await Product.countDocuments(filter);
 
-        // Respuesta con productos y datos de paginación
-        res.json({
-            status: 'success',
-            totalProducts,
-            totalPages,
-            currentPage: pageNumber,
-            products
+        res.status(200).json({
+            total,
+            page: parseInt(page),
+            limit: parseInt(limit),
+            productos,
         });
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener productos' });
+        console.error('Error al buscar productos:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
+
 
 // Obtener un producto por ID
 router.get('/:pid', async (req, res) => {
